@@ -11,18 +11,29 @@ echo "PROVIDER [$PROVIDER]"
 echo ">"
 
 function exe() {
+     echo "executing method $1 params ${2:-[]} ..."
 
      local method="\"$1"\"
      local params="\"${2:-[]}"\"
 
      local DATA="{\"jsonrpc\":\"2.0\",\"method\":${method},\"params\":${params},\"id\":1}"
 
-     echo "$1"
+     unset method
+     unset params
+
+     if [[ -n ${DEBUG:-} ]]; then
+          local verbose="-v"
+     else
+          local verbose="--silent"
+     fi
+
      echo 
 
-     curl --silent --noproxy "*" -X POST -H "Content-Type: application/json" --data "$DATA" "$PROVIDER" | jq .result
+     curl "$verbose" --noproxy "*" -X POST -H "Content-Type: application/json" --data "$DATA" "$PROVIDER" | jq .result
 
      echo "=================================================="
+     unset verbose
+     unset DATA
 }
 
 exe web3_clientVersion
