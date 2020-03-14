@@ -19,5 +19,6 @@ set -x
 docker exec -t "$NODE" sh -c "$CMD $ATTACH"
 
 # ./geth-attach-exec.sh web3.eth.accounts
+# ./geth-attach-exec.sh txpool.inspect
 # ./geth-attach-exec.sh web3.eth.protocolVersion
 # ./geth-attach-exec.sh web3.eth.getBlock\(\"latest\"\)
