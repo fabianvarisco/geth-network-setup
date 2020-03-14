@@ -16,21 +16,12 @@ Prerequisitos:
 
 1) set account address/key (created on step 1) in .env
 
-       MINNER_ADDRESS=
-       MINNER_PKEY=
-
-1) set account address in genesis.json
-
-       "extradata":"...<$MINNER_ADDRESS>..."...
-       "alloc":{"<$MINNER_ADDRESS>":{...
-
-1) init node
-
-       ./geth-init.sh
+       MINER_ADDRESS=
+       MINER_PKEY=
 
 1) run node
 
-       ./geth-run-node.sh
+       ./geth-reset-node.sh
 
 1) test node
 

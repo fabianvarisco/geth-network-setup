@@ -3,11 +3,7 @@
 [[ -n ${DEBUG:-} ]] && set -x
 set -Eeuo pipefail
 
-if [[ -z $1 ]]; then
-   readonly WEB3SCRIPT="eth.accounts"
-else
-   readonly WEB3SCRIPT="$1"
-fi
+readonly WEB3SCRIPT="${1:-eth.accounts}"
 
 readonly ATTACH="| geth attach ipc:/root/.ethereum/chain1/geth.ipc"
 

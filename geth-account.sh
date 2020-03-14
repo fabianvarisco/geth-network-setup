@@ -9,21 +9,30 @@ set -Eeuo pipefail
 
 echo "CHAIN_DIR [$CHAIN_DIR]"
 echo "DOCKER_CHAIN_DIR [$DOCKER_CHAIN_DIR]"
-echo "NODE [$NODE]"
 
-readonly KEYSTORE_DIR="$CHAIN_DIR/$NODE/keystore"
+readonly REAL_CHAIN_DIR="$(realpath "$CHAIN_DIR")"
+
+readonly KEYSTORE_DIR="$REAL_CHAIN_DIR/$NODE/keystore"
 echo "KEYSTORE_DIR [$KEYSTORE_DIR]"
 
 readonly COMMAND="${1:-list}"
 
 case $COMMAND in
-list | new ) ;;
-*) echo "ERROR: arg1 [$COMMAND] not found"
-   exit 1
-   ;;
+extract ) 
+    /web3-account-extract.sh 
+    exit
+    ;;
+list | new ) 
+    ;;
+*)  echo "ERROR: arg1 [$COMMAND] not found"
+    exit 1
+    ;;
 esac
 
-mkdir -p "$CHAIN_DIR/$NODE"
+echo "GETH_IMAGE [$GETH_IMAGE]"
+echo "NODE [$NODE]"
+
+mkdir -p "$REAL_CHAIN_DIR/$NODE"
 
 case "$COMMAND" in
 new )
@@ -32,9 +41,9 @@ new )
         exit 1
     fi
     readonly KEYSTORE_PASSWORD_FILENAME=keystore-password.txt
-    rm -f "$CHAIN_DIR/$KEYSTORE_PASSWORD_FILENAME"
-    echo "$KEYSTORE_PASSWORD" > "$CHAIN_DIR/$KEYSTORE_PASSWORD_FILENAME"
-    cat "$CHAIN_DIR/$KEYSTORE_PASSWORD_FILENAME"
+    rm -f "$REAL_CHAIN_DIR/$KEYSTORE_PASSWORD_FILENAME"
+    echo "$KEYSTORE_PASSWORD" > "$REAL_CHAIN_DIR/$KEYSTORE_PASSWORD_FILENAME"
+    cat "$REAL_CHAIN_DIR/$KEYSTORE_PASSWORD_FILENAME"
     readonly PASSWORD_OPTION="--password $DOCKER_CHAIN_DIR/$KEYSTORE_PASSWORD_FILENAME"
     ;;
 list )
@@ -51,14 +60,14 @@ list )
 esac
 
 docker run -it --rm \
-       -v "$CHAIN_DIR:$DOCKER_CHAIN_DIR" \
-       "$IMAGE" \
+       -v "$REAL_CHAIN_DIR:$DOCKER_CHAIN_DIR" \
+       "$GETH_IMAGE" \
        account "$COMMAND" \
        --datadir "$DOCKER_CHAIN_DIR/$NODE" \
        $PASSWORD_OPTION
 
-sudo --preserve-env --set-home -u root chmod +xxx "$CHAIN_DIR/$NODE"
+sudo --preserve-env --set-home -u root chmod +xxx "$REAL_CHAIN_DIR/$NODE"
 sudo --preserve-env --set-home -u root chmod +xxx "$KEYSTORE_DIR"
 sudo --preserve-env --set-home -u root chmod -R +rrr "$KEYSTORE_DIR"
 
-./geth-account-extract.sh
+./web3-account-extract.sh
