@@ -18,9 +18,9 @@ function exe() {
      local DATA="{\"jsonrpc\":\"2.0\",\"method\":${method},\"params\":${params},\"id\":1}"
 
      echo "$1"
-     echo ">"
+     echo 
 
-     curl --noproxy "*" -X POST -H "Content-Type: application/json" --data "$DATA" "$PROVIDER" | jq .result
+     curl --silent --noproxy "*" -X POST -H "Content-Type: application/json" --data "$DATA" "$PROVIDER" | jq .result
 
      echo "=================================================="
 }
