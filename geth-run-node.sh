@@ -13,7 +13,7 @@ echo "NETWORK_ID [$NETWORK_ID]"
 echo "GETH_IMAGE [$GETH_IMAGE]"
 echo "NODE [$NODE]"
 echo "MINER_ADDRESS [$MINER_ADDRESS]"
-echo "GETH_VMDEBUG [${GETH_VMDEBUG:=N}]"
+echo "GETH_DEBUG [${GETH_DEBUG:=N}]"
 
 readonly KEYSTORE_PASSWORD_FILENAME=keystore-password.txt
 rm -f "$CHAIN_DIR/$KEYSTORE_PASSWORD_FILENAME"
@@ -24,15 +24,15 @@ readonly PASSWORD_OPTION="--password $DOCKER_CHAIN_DIR/$KEYSTORE_PASSWORD_FILENA
 # ToDo: --gcmode archive # Asi esta en la BFA, entender lo que implica
 
 case "$GETH_IMAGE" in
-*v1.8.27 ) 
+*v1.8.27 )
     readonly ALLOW_INSECURE_UNLOCK_OPTION="" ;;
 * ) readonly ALLOW_INSECURE_UNLOCK_OPTION="--allow-insecure-unlock" ;;
 esac
 
-case "$GETH_VM_DEBUG" in
-   Y | y | 1 | YES | yes | OK | ok | Ok ) 
-       readonly VMDEBUG_OPTION="--vmdebug" ;;
-   * ) readonly VMDEBUG_OPTION="" ;;
+case "$GETH_DEBUG" in
+   Y | y | 1 | YES | yes | OK | ok | Ok )
+       readonly DEBUG_OPTION="--vmdebug --debug --verbosity 5" ;;
+   * ) readonly DEBUG_OPTION="" ;;
 esac
 
 docker run -it --rm \
@@ -49,8 +49,8 @@ docker run -it --rm \
        --rpc --rpcapi="txpool,eth,net,web3,clique" --rpcaddr 0.0.0.0 --rpccorsdomain '*' \
        --syncmode full \
        --gcmode archive \
-       --verbosity "6" \
-       $VMDEBUG_OPTION \
+        \
+       $DEBUG_OPTION \
        $ALLOW_INSECURE_UNLOCK_OPTION \
        $PASSWORD_OPTION
 
