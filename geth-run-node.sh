@@ -44,14 +44,22 @@ docker run -it --rm \
        --networkid "$NETWORK_ID" \
        --nodiscover \
        --nousb \
-       --mine --miner.threads=1 --etherbase="$MINER_ADDRESS" \
-       --unlock "$MINER_ADDRESS" \
+       --mine --etherbase="${MINER_ADDRESS:2}" --targetgaslimit 99999999999 \
+       --unlock "${MINER_ADDRESS:2}" \
        --rpc --rpcapi="txpool,eth,net,web3,clique" --rpcaddr 0.0.0.0 --rpccorsdomain '*' \
        --syncmode full \
-       --gcmode archive \
-        \
        $DEBUG_OPTION \
        $ALLOW_INSECURE_UNLOCK_OPTION \
        $PASSWORD_OPTION
 
 #       dumpconfig
+#       --gcmode archive \
+# --miner.threads=1
+
+# Gonzalo:
+#
+#
+# Imagen docker --> "ethereum/client-go:stable"
+# Parametros base -->    RPC_ARG=' --networkid 1981 --rpc --rpcaddr=0.0.0.0 --rpcport 8545 --rpcapi=db,eth,net,web3,personal --rpccorsdomain "*"'
+# Para Sealer --> ETHERBASE=${ETHERBASE:-"f17f52151EbEF6C7334FAD080c5704D77216b732"}
+# ./runnode.sh $NODE_NAME --targetgaslimit 99999999999 --nodiscover --mine --syncmode "full" --etherbase $ETHERBASE -allow-insecure-unlock --unlock "$ETHERBASE" --password /opt/password.$1.txt

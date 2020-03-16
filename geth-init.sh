@@ -34,8 +34,10 @@ function make_genesis() {
       exit 1
    fi
    echo "GENESIS_TEMPLATE [$GENESIS_TEMPLATE]"
-   
+
    local gt="$( cat "$GENESIS_TEMPLATE" )"
+
+   echo "Processing json with jq ..."
 
    gt="$(echo $gt | jq ".config.chainId = $NETWORK_ID")"
 
@@ -49,7 +51,7 @@ function make_genesis() {
       case "$ALLOC_MINER" in
       Y | y | 1 | YES | yes | OK | ok | Ok )
          local balance="0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
-         local alloc="{\"$MINER_ADDRESS\":{\"balance\": \"$balance\"}}"
+         local alloc="{\"${MINER_ADDRESS:2}\":{\"balance\": \"$balance\"}}"
          gt="$(echo $gt | jq ".alloc += $alloc")"
          unset balance
          unset alloc
@@ -60,7 +62,7 @@ function make_genesis() {
       echo "> EXTRADATA_MINER [$EXTRADATA_MINER]"
       case "$EXTRADATA_MINER" in
       Y | y | 1 | YES | yes | OK | ok | Ok )
-         local pre="0x6266612e6172207465737432206e657400000000000000000000000000000000"
+         local pre="0x0000000000000000000000000000000000000000000000000000000000000000"
          local post="0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
          local EXTRA_DATA="\"${pre}${MINER_ADDRESS:2}${post}\""
          unset pre
@@ -68,10 +70,10 @@ function make_genesis() {
          gt="$(echo $gt | jq ".extraData = $EXTRA_DATA")"
       esac
    fi
-   
+
    echo "$gt" > "$REAL_GENESIS_PATH"
 
-   cat "$REAL_GENESIS_PATH" | jq
+   jq . "$REAL_GENESIS_PATH"
 
    unset gt
    unset REAL_GENESIS_PATH

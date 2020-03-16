@@ -11,7 +11,7 @@
     "clique": { "period": 5, "epoch": 30000 }
   },
   "nonce": "0x0000000000000000",
-  "timestamp": "0x5ce54321",
+  "timestamp": "0x00",
   "extraData": "",
   "gasLimit": "0xffeeddcc", "difficulty": "0x1", "number": "0x0", "gasUsed": "0x0",
   "mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
