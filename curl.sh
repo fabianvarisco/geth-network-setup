@@ -14,7 +14,7 @@ function exe() {
      echo "executing method $1 params ${2:-[]} ..."
 
      local method="\"$1"\"
-     local params="\"${2:-[]}"\"
+     local params="${2:-[]}"
 
      local DATA="{\"jsonrpc\":\"2.0\",\"method\":${method},\"params\":${params},\"id\":1}"
 
@@ -27,7 +27,7 @@ function exe() {
           local verbose="--silent"
      fi
 
-     echo 
+     echo
 
      curl "$verbose" --noproxy "*" -X POST -H "Content-Type: application/json" --data "$DATA" "$PROVIDER" | jq .result
 
@@ -44,14 +44,12 @@ exe txpool_content
 
 exe eth_pendingTransactions
 
-exe eth_pendingTransactions '["pending"]'
+exe eth_getBalance '["0x815c9A8159B2a99F3E05062377cC41A5dFF86F53", "latest"]'
 
-exe eth_getBalance '["0x198Dc5869055b73037A118ab576884813E1b6e93", "latest"]'
+exe eth_getTransactionCount '["0x815c9A8159B2a99F3E05062377cC41A5dFF86F53", "latest"]'
 
-exe eth_getTransactionCount '["0x198Dc5869055b73037A118ab576884813E1b6e93", "pending"]'
+exe eth_getTransactionCount '["0x815c9A8159B2a99F3E05062377cC41A5dFF86F53", "pending"]'
 
-exe eth_getTransactionByHash '["0x9f565e05eac245a9b70cf728f02575c42526246311101dcf35f4df9b3d62628d"]'
-
-exe eth_getTransactionReceipt '["0x9f565e05eac245a9b70cf728f02575c42526246311101dcf35f4df9b3d62628d"]'
+exe eth_getTransactionByHash '["0x3720fffb2387cbeb67a0b1e13fb95dfd9b0ab8368453fec7165132a30a22c6c0"]'
 
 exe eth_getBlockByNumber '["0x4E63", false]'
