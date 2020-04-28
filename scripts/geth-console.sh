@@ -5,17 +5,17 @@ set -Eeuo pipefail
 
 [[ -f .env ]] && source .env
 
-echo "CHAIN_DIR [$CHAIN_DIR]"
-echo "DOCKER_CHAIN_DIR [$DOCKER_CHAIN_DIR]"
+echo "GETH_INSTANCE [$GETH_INSTANCE]"
+echo "DOCKER_GETH_INSTANCE [$DOCKER_GETH_INSTANCE]"
 echo "NETWORK_ID [$NETWORK_ID]"
 echo "GETH_IMAGE [$GETH_IMAGE]"
 
 set -x
 docker run -it --rm \
-       -v "$CHAIN_DIR:$DOCKER_CHAIN_DIR" \
+       -v "$GETH_INSTANCE:$DOCKER_GETH_INSTANCE" \
        "$GETH_IMAGE" \
        geth \
-       --datadir "$DOCKER_CHAIN_DIR/$NODE" \
+       --datadir "$DOCKER_GETH_INSTANCE/$NODE" \
        --networkid "$NETWORK_ID" \
        --nodiscover \
        --nousb \

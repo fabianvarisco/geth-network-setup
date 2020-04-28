@@ -1,28 +1,43 @@
-# Ethereum Docker
+# GNS - geth-network-setup
 
-Prerequisitos:
+### run a DEV node
 
-1) Docker
+       $ ./setup.sh reset
 
-2) Intall gochain
+`reset` is only valid for `dev` environment.
 
-       curl -LSs https://raw.githubusercontent.com/gochain/web3/master/install.sh | sh
+On `reset` `GNS` creates a miner account and saves its address and pkey into `./dev/.miner`.
 
-# Run a dev node
+know others features runnnig:
 
-1) create an account
+       $ ./setup.sh
 
-       ./get-account new
+---
 
-1) set account address/key (created on step 1) in .env
+### setup.conf
 
-       MINER_ADDRESS=
-       MINER_PKEY=
+| var                    | environment | desc                                                              |
+| :--------------------- | ----------- | :---------------------------------------------------------------- |
+| `ENVIRONMENT`          | all         | `dev`, `bfa.testnet` or `bfa.mainnet`                             |
+| `DEV_NETWORK_ID`       | `dev`       | value for `genesis.json` `.config.chainId`                        |
+| `CONSTANTINOPLE_BLOCK` | `dev`       | value for `genesis.json` `.config.constantinopleBlock`            |
+| `ALLOC_MINER`          | `dev`       | `Y`: value for `genesis.json` `.alloc` using `MINER_ADDRESS`      |
+| `EXTRADATA_MINER`      | `dev`       | `Y`: value for `genesis.json` `.extraData` using `MINER_ADDRESS`  |
 
-1) run node
+---
 
-       ./geth-reset-node.sh
+## Dependencies
 
-1) test node
+### docker
 
-       ./curl.sh
+`GNS` runs geth stable docker contanier.
+
+### gochain/web3 cli tool
+
+https://github.com/gochain/web3
+
+`GNS` uses this cli tool to extract keys from geth keystores.
+
+Quick one line install:
+
+    curl -LSs https://raw.githubusercontent.com/gochain/web3/master/install.sh | sh
