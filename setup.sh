@@ -45,9 +45,9 @@ function clean() {
 
    if [[ $1 != keystore ]]; then
       local cs
-            cs="$(docker container ls -aq)"
+            cs="$(docker ps --format \{\{.Names\}\} --filter expose=30303)"
       [[ ! -z $cs ]] && docker container stop $cs
-      docker system prune
+      docker system prune --force
    fi
 }
 
