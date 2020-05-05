@@ -98,7 +98,6 @@ DOCKER_CMD="docker run ${DOCKER_DETACHED_MODE:-d} \
        --rpcvhosts=* \
        --rpcaddr "0.0.0.0" \
        --wsaddr "0.0.0.0" \
-       --nat none \
        --config $DOCKER_GETH_INSTANCE/$NODE/config.toml \
        $TARGETGASLIMIT_OPTION \
        $NODISCOVER_OPTION \
@@ -106,6 +105,7 @@ DOCKER_CMD="docker run ${DOCKER_DETACHED_MODE:-d} \
        $DEBUG_OPTIONS \
        $ALLOW_INSECURE_UNLOCK_OPTION \
        $PASSWORD_OPTION"
+#       --nat none \
 
 echo "running node..."
 echo $DOCKER_CMD | sed 's/\\.*//'
