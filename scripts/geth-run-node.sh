@@ -21,6 +21,7 @@ echo "GETH_INSTANCE [$GETH_INSTANCE]"
 readonly REAL_GETH_INSTANCE="$(realpath "$GETH_INSTANCE")"
 echo "REAL_GETH_INSTANCE [$REAL_GETH_INSTANCE]"
 echo "DOCKER_GETH_INSTANCE [$DOCKER_GETH_INSTANCE]"
+echo "DOCKER_GETH_INSTANCE [$DOCKER_DETACHED_MODE]"
 echo "GETH_IMAGE [$GETH_IMAGE]"
 echo "GETH_DEBUG [${GETH_DEBUG:=N}]"
 
@@ -71,26 +72,42 @@ else
 fi
 echo "NETWORK_ID [$NETWORK_ID]"
 
+DOCKER_NETWORK_ID=geth_network
+if [ -z $(docker network ls --filter name=^${DOCKER_NETWORK_ID}$ --format "{{.Name}}") ]; then
+  echo "creating network ${DOCKER_NETWORK_ID}..."
+  docker network create $DOCKER_NETWORK_ID
+  echo "${DOCKER_NETWORK_ID} created"
+fi
+
 # ToDo: --gcmode archive # Asi esta en la BFA, entender lo que implica
 
-docker run -d \
+DOCKER_CMD="docker run ${DOCKER_DETACHED_MODE:-d} \
+       --rm \
        --name "$NODE" \
+       --network $DOCKER_NETWORK_ID \
        -v "$REAL_GETH_INSTANCE:$DOCKER_GETH_INSTANCE" \
        -p "${RPC_PORT:-8545}":8545 \
        -p "${WS_PORT:-8546}":8546 \
        -p "${GRAPHQL_PORT:-8547}":8547 \
-       -p 30303:30303 \
        "$GETH_IMAGE" \
        --networkid "$NETWORK_ID" \
        --datadir "$DOCKER_GETH_INSTANCE/$NODE" \
        --nousb \
-       --rpc --rpcapi=txpool,eth,net,web3,clique --rpcaddr 0.0.0.0 --rpccorsdomain '*' \
-       --syncmode full \
+       --rpc \
+       --ipcdisable \
+       --rpcvhosts=* \
+       --rpcaddr "0.0.0.0" \
+       --wsaddr "0.0.0.0" \
+       --nat none \
+       --config $DOCKER_GETH_INSTANCE/$NODE/config.toml \
        $TARGETGASLIMIT_OPTION \
        $NODISCOVER_OPTION \
        $MINER_OPTIONS \
        $DEBUG_OPTIONS \
        $ALLOW_INSECURE_UNLOCK_OPTION \
-       $PASSWORD_OPTION
+       $PASSWORD_OPTION"
 
+echo "running node..."
+echo $DOCKER_CMD | sed 's/\\.*//'
+$DOCKER_CMD
 docker port "$NODE"
