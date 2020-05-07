@@ -5,7 +5,7 @@ NoPruning = true
 NoPrefetch = false
 LightPeers = 100
 UltraLightFraction = 75
-DatabaseCache = 2048
+DatabaseCache = 1024
 DatabaseFreezer = ""
 TrieCleanCache = 1024
 TrieDirtyCache = 1024
@@ -55,15 +55,15 @@ RestrictConnectionBetweenLightClients = true
 [Node]
 #DataDir = "/home/bfa/bfa/test2network/node"
 #HTTPHost = "0.0.0.0"
-HTTPCors = ["*"]
+#HTTPCors = ["*"]
 omitempty = ""
-#IPCPath = "geth.ipc"
+IPCPath = "/ipc/geth.ipc"
 #HTTPPort = 8545
 #HTTPVirtualHosts = ["localhost"]
-HTTPModules = ["net", "web3", "eth", "txpool"]
+HTTPModules = ["net", "web3", "eth", "clique", "admin", "txpool"]
 #WSHost = "0.0.0.0"
 #WSPort = 8546
-WSModules = ["net", "web3", "eth", "txpool"]
+WSModules = ["net", "web3", "eth", "clique", "admin", "txpool"]
 #GraphQLPort = 8547
 GraphQLVirtualHosts = ["localhost"]
 
@@ -80,7 +80,7 @@ BootstrapNodesV5 = ["enode://7ec4dd9d5e1a2b29d6b60aa9f95677c0c3a5f9306e73d65dd3b
                     "enode://59ae768ecdee632e0daceccb6f71b215392eba89230d626573f2fb4e9c0786c9a661027ab7343820ca63d96fe48ffd81ed1bf6e4d512f0ba50ec072c9efd9e4e@200.108.146.100:30301"]
 StaticNodes = []
 TrustedNodes = []
-#ListenAddr = ":30303"
+ListenAddr = ":30303"
 EnableMsgEvents = false
 
 [Node.HTTPTimeouts]
