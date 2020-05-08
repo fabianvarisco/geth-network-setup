@@ -56,11 +56,7 @@ if [[ $ENVIRONMENT == dev ]]; then
    readonly TARGETGASLIMIT_OPTION="--targetgaslimit 99999999999"
    readonly CONFIG_OPTION=""
    readonly NETWORK_ID="$DEV_NETWORK_ID"
-
-   case "$GETH_IMAGE" in
-   *v1.8.27 )  readonly ALLOW_INSECURE_UNLOCK_OPTION="" ;;
-   * )         readonly ALLOW_INSECURE_UNLOCK_OPTION="--allow-insecure-unlock" ;;
-   esac
+   readonly ALLOW_INSECURE_UNLOCK_OPTION="--allow-insecure-unlock"
 else
    # some BFA
    readonly MINER_OPTIONS=""
