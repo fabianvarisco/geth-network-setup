@@ -105,22 +105,31 @@ function reset() {
 
   run
 
-  sleep 5 && test
+  sleep 5
+
+  test
+
+  attach
+}
+
+function attach() {
+   "$BASE/scripts/geth-attach-exec.sh" "$*"
 }
 
 function usage() {
    echo "Usage: $0 task [options]"
    echo
    echo "tasks:"
-   echo " show_config: show config ..."
-   echo " clean <all|keystore|geth>: backup and remove previous instance"
-   echo " accounts new: create an account"
-   echo " accounts list: list accounts in keystore"
-   echo " accounts extract [ouput-file-name]: extract accounts/privatekeys from keystore (using web3 cli tool)"
-   echo " init <dev|bfa.testnet|bfa.mainnet> <node1|node2|...>: init node"
-   echo " run"
-   echo " test"
-   echo " reset: clean, init, run (dev only)"
+   echo " show_config: Show config ..."
+   echo " clean <all|keystore|geth>: Backup and remove previous instance"
+   echo " accounts new: Create an account"
+   echo " accounts list: List accounts in keystore"
+   echo " accounts extract [ouput-file-name]: Extract accounts/privatekeys from keystore (using web3 cli tool)"
+   echo " init <dev|bfa.testnet|bfa.mainnet> <node1|node2|...>: Init node"
+   echo " run: Run node"
+   echo " test: Test node executing some jsonrpc calls"
+   echo " reset: Run clean, init, run (dev only)"
+   echo " attach <javascrip>: Ejecute javascript"
    exit
 }
 
@@ -162,6 +171,10 @@ function main() {
       * ) echo_red "ERROR: task [$TASK] - [$#] unexpected number or args"
           usage
       esac
+      ;;
+   attach )
+      shift
+      attach "$@"
       ;;
    *) echo_red "ERROR: arg1 [$1] invalid"
       usage
