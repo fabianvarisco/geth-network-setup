@@ -95,6 +95,10 @@ set_account
 
 call web3_clientVersion
 
+call net_peerCount
+
+call eth_syncing
+
 call eth_accounts
 
 call txpool_content

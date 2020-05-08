@@ -86,6 +86,7 @@ DOCKER_CMD="docker run ${DOCKER_DETACHED_MODE:-d} \
        --name "$NODE" \
        --network $DOCKER_NETWORK_ID \
        -v "$REAL_GETH_INSTANCE:$DOCKER_GETH_INSTANCE" \
+       -v $HOME/.ethereum:/ipc \
        -p "${RPC_PORT:-8545}":8545 \
        -p "${WS_PORT:-8546}":8546 \
        -p "${GRAPHQL_PORT:-8547}":8547 \
@@ -94,7 +95,6 @@ DOCKER_CMD="docker run ${DOCKER_DETACHED_MODE:-d} \
        --datadir "$DOCKER_GETH_INSTANCE/$NODE" \
        --nousb \
        --rpc \
-       --ipcdisable \
        --rpcvhosts=* \
        --rpcaddr "0.0.0.0" \
        --wsaddr "0.0.0.0" \
@@ -105,7 +105,6 @@ DOCKER_CMD="docker run ${DOCKER_DETACHED_MODE:-d} \
        $DEBUG_OPTIONS \
        $ALLOW_INSECURE_UNLOCK_OPTION \
        $PASSWORD_OPTION"
-#       --nat none \
 
 echo "running node..."
 echo $DOCKER_CMD | sed 's/\\.*//'
