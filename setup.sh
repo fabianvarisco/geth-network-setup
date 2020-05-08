@@ -1,7 +1,7 @@
 #!/bin/bash
 
+[[ -n ${DEBUG:-} ]] && set -x
 set -Eeuo pipefail
-#set -x
 
 # Initialize
 readonly BASE="$(dirname "$0")"
@@ -34,7 +34,7 @@ function test() {
 
 function clean() {
    case "$1" in
-   all )      local TARGET="$GETH_INSTANCE" ;;
+   all )      local TARGET="$GETH_INSTANCE/$NODE" ;;
    geth )     local TARGET="$GETH_INSTANCE/$NODE/geth" ;;
    keystore ) local TARGET="$GETH_INSTANCE/$NODE/keystore" ;;
    * ) echo_red "ERROR: task [clean] - arg2 [$1] unexpected"
@@ -44,11 +44,14 @@ function clean() {
    warn_backup_rm "$TARGET"
 
    if [[ $1 != keystore ]]; then
-      local cs
-            cs="$(docker ps --format \{\{.Names\}\} --filter expose=30303)"
-      [[ ! -z $cs ]] && docker container stop $cs
-      docker system prune --force
+      local container
+            container="$(docker ps --format \{\{.Names\}\} --filter name="$NODE")"
+      if [[ ! -z $container ]]; then
+         echo "stoping container $container ..."
+         docker container stop "$container"
+      fi
    fi
+   return 0
 }
 
 function show_config() {
