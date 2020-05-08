@@ -86,12 +86,12 @@ fi
 
 # ToDo: --gcmode archive # Asi esta en la BFA, entender lo que implica
 
-DOCKER_CMD="docker run "$DOCKER_DETACHED_MODE" \
+dockerdebug run "$DOCKER_DETACHED_MODE" \
        --rm \
        --name "$NODE" \
-       --network $DOCKER_NETWORK_ID \
+       --network "$DOCKER_NETWORK_ID" \
        -v "$REAL_GETH_INSTANCE:$DOCKER_GETH_INSTANCE" \
-       -v $HOME/.ethereum:/ipc \
+       -v "$HOME/.ethereum:/ipc" \
        -p "${RPC_PORT:-8545}":8545 \
        -p "${WS_PORT:-8546}":8546 \
        -p "${GRAPHQL_PORT:-8547}":8547 \
@@ -109,10 +109,6 @@ DOCKER_CMD="docker run "$DOCKER_DETACHED_MODE" \
        $MINER_OPTIONS \
        $DEBUG_OPTIONS \
        $ALLOW_INSECURE_UNLOCK_OPTION \
-       $PASSWORD_OPTION"
-
-echo "running node..."
-echo $DOCKER_CMD | sed 's/\\.*//'
-$DOCKER_CMD
+       $PASSWORD_OPTION
 
 docker port "$NODE"
