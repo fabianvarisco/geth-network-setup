@@ -14,22 +14,6 @@ EnablePreimageRecording = false
 EWASMInterpreter = ""
 EVMInterpreter = ""
 
-[Eth.Miner]
-GasFloor = 8000000
-GasCeil = 8000000
-GasPrice = 1000000000
-Recommit = 3000000000
-Noverify = false
-
-[Eth.Ethash]
-CacheDir = "ethash"
-CachesInMem = 2
-CachesOnDisk = 3
-#DatasetDir = "/home/bfa/.ethash"
-DatasetsInMem = 1
-DatasetsOnDisk = 2
-PowMode = 0
-
 [Eth.TxPool]
 Locals = []
 NoLocals = true
@@ -53,20 +37,23 @@ MinimumAcceptedPOW = 2e-01
 RestrictConnectionBetweenLightClients = true
 
 [Node]
-#DataDir = "/home/bfa/bfa/test2network/node"
-#HTTPHost = "0.0.0.0"
-#HTTPCors = ["*"]
-omitempty = ""
-IPCPath = "/ipc/geth.ipc"
-#HTTPPort = 8545
-#HTTPVirtualHosts = ["localhost"]
+HTTPPort = 8545 
+HTTPHost = "0.0.0.0"
+HTTPCors = ["*"]
+HTTPVirtualHosts = ["localhost"]
 HTTPModules = ["net", "web3", "eth", "clique", "admin", "txpool"]
-#WSHost = "0.0.0.0"
-#WSPort = 8546
+
+WSPort = 8546
+WSHost = "0.0.0.0"
 WSModules = ["net", "web3", "eth", "clique", "admin", "txpool"]
-#GraphQLPort = 8547
+WSOrigins = ["0.0.0.0"]
+
+GraphQLPort = 8547
+GraphQLHost = "0.0.0.0"
+GraphQLCors = ["*"]
 GraphQLVirtualHosts = ["localhost"]
 
+IPCPath = "/ipc/geth.ipc"
 [Node.P2P]
 MaxPeers = 50
 NoDiscovery = false
