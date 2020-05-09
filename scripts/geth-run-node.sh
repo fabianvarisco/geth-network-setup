@@ -95,9 +95,7 @@ DOCKER_CMD="docker run ${DOCKER_DETACHED_MODE:-d} \
        --datadir "$DOCKER_GETH_INSTANCE/$NODE" \
        --nousb \
        --rpc \
-       --rpcvhosts=* \
-       --rpcaddr "0.0.0.0" \
-       --wsaddr "0.0.0.0" \
+       --graphql \
        --config $DOCKER_GETH_INSTANCE/$NODE/config.toml \
        $TARGETGASLIMIT_OPTION \
        $NODISCOVER_OPTION \
