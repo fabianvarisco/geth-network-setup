@@ -13,6 +13,10 @@ readonly BASE="$(dirname "$0")"
 
 echo_running
 
+# ACCOUNT=""
+# BLOCK="0x4E63"
+# TX_HASH="0xc9d52a83a20f6c03a759ee4314f33accd6cbade5449ff7ce4d32994b904a374b"
+
 [[ -f setup.conf ]] && source setup.conf
 
 # https://geth.ethereum.org/docs/rpc/server
@@ -26,9 +30,6 @@ if [[ ${GETH_RPC_URL:-none} == none ]]; then
    exit 1
 fi
 
-ACCOUNT=""
-#BLOCK="0x4E63"
-#TX_HASH="0xc9d52a83a20f6c03a759ee4314f33accd6cbade5449ff7ce4d32994b904a374b"
 
 echo "ENVIRONMENT [${ENVIRONMENT:-}]"
 echo "GETH_RPC_URL [$GETH_RPC_URL]"
@@ -77,7 +78,7 @@ function call() {
 }
 
 function set_account() {
-     [[ ! -z $ACCOUNT ]] && return 0
+     [[ -v ACCOUNT && ! -z $ACCOUNT ]] && return 0
 
      [[ ${ENVIRONMENT:-none} != dev ]] && return 0
 
@@ -111,7 +112,7 @@ call eth_pendingTransactions
 
 [[ ! -z $ACCOUNT ]] && call eth_getTransactionCount "$ACCOUNT" "pending"
 
-[[ ! -z ${T_HASH:-} ]] && call eth_getTransactionByHash "$TX_HASH"
+[[ ! -z ${TX_HASH:-} ]] && call eth_getTransactionByHash "$TX_HASH"
 
 [[ ! -z ${BLOCK:-} ]] && call eth_getBlockByNumber "$BLOCK"
 

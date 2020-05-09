@@ -7,20 +7,22 @@ function echo_green() { echo -e "\033[1;32m$@\033[0m"; }
 function echo_blue() { echo -e "\033[1;34m$@\033[0m"; }
 
 
-function docker() {
-   [[ -v DOCKERDEBUG ]] && echo docker "$@"
+function dockerdebug() {
+   [[ -v DOCKERDEBUG ]] && echo "[DOCKERDEBUG] docker $*"
    command docker "$@"
 }
 
 function echo_sep() {
+   [[ -v DEBUG ]] && return 0
    for i in {1..80}; do echo -n "-"; done
    echo
    if [[ $# -eq 1 ]]; then
-      echo $1
+      echo "$1"
    fi
 }
 
 function echo_bold_sep() {
+   [[ -v DEBUG ]] && return 0
    for i in {1..80}; do echo -n "#"; done
    echo
 }
@@ -174,54 +176,6 @@ get_CN_from_crypto_material() {
    local commonName=$(openssl $1 -noout -$2 -nameopt multiline -in "$3" | grep commonName)
    local array=($commonName)
    echo ${array[2]}
-}
-
-function make_msp_config_yaml () {
-   local CA_CRT_PATH="$1"
-   local OUI="$2"
-   local OUTPUT_FILENAME="$3"
-
-# NodeOUs.[Admin|Client|Peer|Orderer]OUIdentifier.Certificate:
-# Set this to the path of the CA or intermediate CA certificate under which client (peer, admin or orderer) identities should be validated.
-# The field is relative to the MSP root folder.
-# This field is optional.
-# You can leave this field blank and allow the certificate to be validated under any CA defined in the MSP configuration.
-
-# NodeOUs.[Admin|Client|Peer|Orderer]OUIdentifier.OrganizationalUnitIdentifier:
-# Is the OU value that the x509 certificate needs to contain to be considered a client (admin, peer, orderer respectively).
-# If this field is empty, then the classification is not applied.
-
-cat <<< "# Generado por $THIS
-NodeOUs:
-  Enable: true
-  ClientOUIdentifier:
-#    Certificate: $CA_CRT_PATH
-     OrganizationalUnitIdentifier: client
-  AdminOUIdentifier:
-#    Certificate: $CA_CRT_PATH
-     OrganizationalUnitIdentifier: admin
-  PeerOUIdentifier:
-#    Certificate: $CA_CRT_PATH
-     OrganizationalUnitIdentifier: peer
-  OrdererOUIdentifier:
-#    Certificate: $CA_CRT_PATH
-     OrganizationalUnitIdentifier: orderer
-" > "$OUTPUT_FILENAME"
-
-# Organizational Units:
-# In order to configure the list of Organizational Units that valid members of this MSP should include in their X.509 certificate,
-# the config.yaml file needs to specify the organizational unit (OU, for short) identifiers.
-# The Certificate field refers to the CA or intermediate CA certificate path under which identities,
-# having that specific OU, should be validated.
-# The path is relative to the MSP root folder and cannot be empty.
-
-if [[ $OUI != "none" ]]; then
-cat <<< "
-OrganizationalUnitIdentifiers:
-  - Certificate: $CA_CRT_PATH
-    OrganizationalUnitIdentifier: $OUI
-" >> "$OUTPUT_FILENAME"
-fi
 }
 
 function jq_check_value() {

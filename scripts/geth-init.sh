@@ -123,7 +123,7 @@ function main() {
 
    echo "NETWORK_ID [$NETWORK_ID]"
 
-   docker run -it --rm \
+   dockerdebug run -it --rm \
       -v "$REAL_GETH_INSTANCE:$DOCKER_GETH_INSTANCE" \
       "$GETH_IMAGE" \
       --cache 0 \
