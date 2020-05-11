@@ -106,11 +106,14 @@ call txpool_content
 
 call eth_pendingTransactions
 
-[[ ! -z $ACCOUNT ]] && call eth_getBalance "$ACCOUNT" "latest"
+if [[ -v ACCOUNT && ! -z $ACCOUNT ]]; then
 
-[[ ! -z $ACCOUNT ]] && call eth_getTransactionCount "$ACCOUNT" "latest"
+     call eth_getBalance "$ACCOUNT" "latest"
 
-[[ ! -z $ACCOUNT ]] && call eth_getTransactionCount "$ACCOUNT" "pending"
+     call eth_getTransactionCount "$ACCOUNT" "latest"
+
+     call eth_getTransactionCount "$ACCOUNT" "pending"
+fi
 
 [[ ! -z ${TX_HASH:-} ]] && call eth_getTransactionByHash "$TX_HASH"
 
