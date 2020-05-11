@@ -70,6 +70,7 @@ else
          exit 1
    esac
    readonly ALLOW_INSECURE_UNLOCK_OPTION=""
+   readonly PASSWORD_OPTION=""
 fi
 echo "NETWORK_ID [$NETWORK_ID]"
 
