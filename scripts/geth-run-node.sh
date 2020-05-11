@@ -19,19 +19,9 @@ echo "GETH_INSTANCE [$GETH_INSTANCE]"
 readonly REAL_GETH_INSTANCE="$(realpath "$GETH_INSTANCE")"
 echo "REAL_GETH_INSTANCE [$REAL_GETH_INSTANCE]"
 echo "DOCKER_GETH_INSTANCE [$DOCKER_GETH_INSTANCE]"
-echo "DOCKER_DETACHED_MODE [${DOCKER_DETACHED_MODE:=-d}]"
+echo "DOCKER_OPTIONS [${DOCKER_OPTIONS:=-d}]"
 echo "GETH_IMAGE [$GETH_IMAGE]"
 echo "GETH_DEBUG [${GETH_DEBUG:=N}]"
-
-if [[ -v KEYSTORE_PASSWORD ]]; then
-   readonly KEYSTORE_PASSWORD_FILENAME=keystore-password.txt
-   rm -f "$GETH_INSTANCE/$KEYSTORE_PASSWORD_FILENAME"
-   echo "$KEYSTORE_PASSWORD" > "$GETH_INSTANCE/$KEYSTORE_PASSWORD_FILENAME"
-   cat "$GETH_INSTANCE/$KEYSTORE_PASSWORD_FILENAME"
-   readonly PASSWORD_OPTION="--password $DOCKER_GETH_INSTANCE/$KEYSTORE_PASSWORD_FILENAME"
-else
-   readonly PASSWORD_OPTION=""
-fi
 
 case "$GETH_DEBUG" in
    Y | y | 1 | YES | yes | OK | ok | Ok )
@@ -50,6 +40,16 @@ if [[ $ENVIRONMENT == dev ]]; then
    check_env MINER_PKEY
    echo "MINER_ADDRESS [$MINER_ADDRESS]"
    readonly MINER_OPTIONS="--mine --miner.threads=1 --etherbase=${MINER_ADDRESS:2} --unlock ${MINER_ADDRESS:2}"
+
+   if [[ -v KEYSTORE_PASSWORD ]]; then
+      readonly KEYSTORE_PASSWORD_FILENAME=keystore-password.txt
+      rm -f "$GETH_INSTANCE/$KEYSTORE_PASSWORD_FILENAME"
+      echo "$KEYSTORE_PASSWORD" > "$GETH_INSTANCE/$KEYSTORE_PASSWORD_FILENAME"
+      cat "$GETH_INSTANCE/$KEYSTORE_PASSWORD_FILENAME"
+      readonly PASSWORD_OPTION="--password $DOCKER_GETH_INSTANCE/$KEYSTORE_PASSWORD_FILENAME"
+   else
+      readonly PASSWORD_OPTION=""
+   fi
 
    readonly NODISCOVER_OPTION="--nodiscover"
    # ToDo: targetgaslimit deprecated => use --miner.gasprice
@@ -82,8 +82,7 @@ fi
 
 # ToDo: --gcmode archive # Asi esta en la BFA, entender lo que implica
 
-dockerdebug run "$DOCKER_DETACHED_MODE" \
-       --rm \
+dockerdebug run "$DOCKER_OPTIONS" \
        --name "$NODE" \
        --network "$DOCKER_NETWORK_ID" \
        -v "$REAL_GETH_INSTANCE:$DOCKER_GETH_INSTANCE" \
