@@ -83,7 +83,7 @@ fi
 
 # ToDo: --gcmode archive # Asi esta en la BFA, entender lo que implica
 
-dockerdebug run "$DOCKER_OPTIONS" \
+dockerdebug run $DOCKER_OPTIONS \
        --name "$NODE" \
        --network "$DOCKER_NETWORK_ID" \
        -v "$REAL_GETH_INSTANCE:$DOCKER_GETH_INSTANCE" \
