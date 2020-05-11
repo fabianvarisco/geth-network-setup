@@ -54,7 +54,7 @@ if [[ $ENVIRONMENT == dev ]]; then
    readonly NODISCOVER_OPTION="--nodiscover"
    # ToDo: targetgaslimit deprecated => use --miner.gasprice
    readonly TARGETGASLIMIT_OPTION="--targetgaslimit 99999999999"
-   readonly CONFIG_OPTION=""
+   readonly CONFIG_TOML_OPTION=""
    readonly NETWORK_ID="$DEV_NETWORK_ID"
    readonly ALLOW_INSECURE_UNLOCK_OPTION="--allow-insecure-unlock"
 else
@@ -62,7 +62,7 @@ else
    readonly MINER_OPTIONS=""
    readonly NODISCOVER_OPTION=""
    readonly TARGETGASLIMIT_OPTION=""
-   readonly CONFIG_OPTION="--config $DOCKER_GETH_INSTANCE/$NODE/config.toml"
+   readonly CONFIG_TOML_OPTION="--config $DOCKER_GETH_INSTANCE/$NODE/config.toml"
    case "$ENVIRONMENT" in
       bfa.mainnet ) readonly NETWORK_ID="$BFA_MAINNET_NETWORK_ID" ;;
       bfa.testnet ) readonly NETWORK_ID="$BFA_TESTNET_NETWORK_ID" ;;
@@ -95,10 +95,8 @@ dockerdebug run "$DOCKER_OPTIONS" \
        --datadir "$DOCKER_GETH_INSTANCE/$NODE" \
        --nousb \
        --rpc \
-       --rpcvhosts=* \
-       --rpcaddr "0.0.0.0" \
-       --wsaddr "0.0.0.0" \
-       $CONFIG_OPTION \
+       --graphql \
+       $CONFIG_TOML_OPTION \
        $TARGETGASLIMIT_OPTION \
        $NODISCOVER_OPTION \
        $MINER_OPTIONS \

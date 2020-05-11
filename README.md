@@ -41,3 +41,47 @@ https://github.com/gochain/web3
 Quick one line install:
 
     curl -LSs https://raw.githubusercontent.com/gochain/web3/master/install.sh | sh
+
+### Testing Modules JSON-RPC, WS & GRAPHL
+
+Simple curls to validate the services initialized by Geth
+
+#### json-prc
+
+``` sh
+curl -s -X POST -H "Content-type:application/json" --data '{"jsonrpc":"2.0","method":"rpc_modules","id":1}'  http://localhost:8545 | jq .
+```
+
+more useful queries
+
+``` sh
+curl -s -X POST -H "Content-type:application/json" --data '{"jsonrpc":"2.0","method":"txpool_inspect","params":[], "id":1}'  http://localhost:8545  | jq
+
+curl -s -X POST -H "Content-type:application/json" --data '{"jsonrpc":"2.0","method":"eth_pendingTransactions","params":[], "id":1}'  http://localhost:8545
+
+curl -s -X POST -H "Content-type:application/json" --data '{"jsonrpc":"2.0","method":"eth_gasPrice","id":1}'  http://localhost:8545
+
+curl -s -X POST -H "Content-type:application/json" --data '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["latest", false],"id":1}'  http://localhost:8545  | jq .result.number | bc -l
+
+curl -v -X POST -H "Content-type:application/json" --data '{"jsonrpc":"2.0","method":"admin_peers","id":1}'  http://localhost:8545  | jq
+
+curl -s -X POST -H "Content-type:application/json" --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}'  http://localhost:8545 | jq .result
+
+curl -q -X POST -H "Content-type:application/json" --data '{"jsonrpc":"2.0","method":"eth_getBalance","params":["0xBFA3cC51926B9D371C9E7afb6b5a6b22162fD0C0","latest"],"id":1}'  http://localhost:8545  | jq .result
+```
+
+#### ws
+
+```sh
+npm install -g wscat
+
+wscat -c  http://localhost:8546 -w 1 -x '{"jsonrpc":"2.0","method":"rpc_modules","id":1}'   | jq .
+```
+
+#### graphql
+
+```sh
+curl -s -X POST -H "Content-Type: application/graphql" -d '{"query":"{block(number:1) {hash}}"}'  http://localhost:8547/graphql | jq
+```
+
+or interactive mode with a browser --> http://localhost:8547/
