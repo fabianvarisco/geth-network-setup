@@ -63,6 +63,8 @@ function show_config() {
 
    echo "GETH_INSTANCE [$GETH_INSTANCE]"
    echo "DOCKER_GETH_INSTANCE [$DOCKER_GETH_INSTANCE]"
+
+   echo "GET_DATADIR [$GETH_DATADIR]"
 }
 
 function account() {
