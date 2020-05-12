@@ -23,6 +23,8 @@ echo "REAL_GETH_INSTANCE [$REAL_GETH_INSTANCE]"
 readonly REAL_NODE_DIR="$REAL_GETH_INSTANCE/$NODE"
 echo "REAL_NODE_DIR [$REAL_NODE_DIR]"
 
+echo "GETH_DATADIR [$GETH_DATADIR]"
+
 echo "DOCKER_GETH_INSTANCE [$DOCKER_GETH_INSTANCE]"
 echo "GETH_IMAGE [$GETH_IMAGE]"
 
@@ -126,10 +128,12 @@ function main() {
    echo "NETWORK_ID [$NETWORK_ID]"
 
    dockerdebug run -it --rm \
+      $DOCKER_USER_OPTIONS \
       -v "$REAL_GETH_INSTANCE:$DOCKER_GETH_INSTANCE" \
+      -v "$GETH_DATADIR:$DOCKER_GETH_INSTANCE/data" \
       "$GETH_IMAGE" \
       --cache 0 \
-      --datadir "$DOCKER_GETH_INSTANCE/$NODE" \
+      --datadir "$DOCKER_GETH_INSTANCE/data" \
       init "$DOCKER_GETH_INSTANCE/$NODE/genesis.json"
 }
 

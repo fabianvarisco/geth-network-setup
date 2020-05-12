@@ -1,3 +1,4 @@
+#!/bin/bash
 [[ -n ${DEBUG:-} ]] && set -x
 set -Eeuo pipefail
 
@@ -13,7 +14,7 @@ readonly WEB3SCRIPT="${1:-web3.admin.nodeInfo}"
 
 # readonly ATTACH="| geth attach ipc:/ipc/geth.ipc"
 
-readonly ATTACH="| geth attach ipc:/root/.ethereum/$NODE/geth.ipc"
+readonly ATTACH="| geth attach ipc:/ipc/geth.ipc"
 
 
 readonly CMD="echo '$WEB3SCRIPT'"
