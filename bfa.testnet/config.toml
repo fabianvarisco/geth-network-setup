@@ -53,7 +53,7 @@ GraphQLHost = "0.0.0.0"
 GraphQLCors = ["*"]
 GraphQLVirtualHosts = ["localhost"]
 
-# IPCPath = "/ipc/geth.ipc"
+IPCPath = "/ipc/geth.ipc"
 
 [Node.P2P]
 MaxPeers = 50
