@@ -124,10 +124,12 @@ function main() {
    echo "NETWORK_ID [$NETWORK_ID]"
 
    dockerdebug run -it --rm \
+      $DOCKER_USER_OPTIONS \
       -v "$REAL_GETH_INSTANCE:$DOCKER_GETH_INSTANCE" \
+      -v "$GETH_DATADIR:$DOCKER_GETH_INSTANCE/data" \
       "$GETH_IMAGE" \
       --cache 0 \
-      --datadir "$DOCKER_GETH_INSTANCE/$NODE" \
+      --datadir "$DOCKER_GETH_INSTANCE/data" \
       init "$DOCKER_GETH_INSTANCE/$NODE/genesis.json"
 }
 
