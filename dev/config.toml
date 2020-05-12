@@ -1,0 +1,6 @@
+[Node]
+HTTPPort = 8545
+HTTPHost = "0.0.0.0"
+HTTPCors = ["*"]
+HTTPVirtualHosts = ["localhost"]
+HTTPModules = ["net", "web3", "eth", "clique", "admin", "txpool"]
