@@ -85,11 +85,22 @@ if [ -z $(docker network ls --filter name=^${DOCKER_NETWORK_ID}$ --format "{{.Na
    echo "${DOCKER_NETWORK_ID} created"
 fi
 
+echo "HTTP_PROXY [${HTTP_PROXY:=""}]"
+echo "HTTPS_PROXY [${HTTPS_PROXY:=$HTTP_PROXY}]"
+echo "NO_PROXY [${NO_PROXY:=""}]"
+
+PROXY_OPTIONS=""
+for env in HTTP_PROXY HTTPS_PROXY NO_PROXY; do
+   value="${!env}"
+   [[ ! -z $value ]] && PROXY_OPTIONS="$PROXY_OPTIONS --env $env=\"$value"\"
+done
+
 # ToDo: --gcmode archive # Asi esta en la BFA, entender lo que implica
 
 dockerdebug run $DOCKER_OPTIONS \
        --name "$NODE" \
        --network "$DOCKER_NETWORK_ID" \
+       $PROXY_OPTIONS \
        -v "$REAL_GETH_INSTANCE:$DOCKER_GETH_INSTANCE" \
        -v "$GETH_DATADIR:$DOCKER_GETH_INSTANCE/data" \
        -v "$HOME/.ethereum:/ipc" \
