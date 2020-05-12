@@ -45,10 +45,10 @@ function clean() {
 
    if [[ $1 != keystore ]]; then
       local container
-            container="$(docker ps --format \{\{.Names\}\} --filter name="$NODE")"
+            container="$(docker ps -a --format \{\{.Names\}\} --filter name="$NODE")"
       if [[ ! -z $container ]]; then
-         echo "stoping container $container ..."
-         docker container stop "$container"
+         echo "removing container $container ..."
+         dockerdebug rm --force "$container"
       fi
    fi
    return 0

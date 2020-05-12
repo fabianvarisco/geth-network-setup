@@ -100,6 +100,8 @@ function main() {
    case "$ENVIRONMENT" in
    dev )
       make_dev_genesis
+      readonly CONFIG_TOML="$BASE/../$ENVIRONMENT/config.toml"
+      [[ -e $CONFIG_TOML ]] && cp "$CONFIG_TOML" "$REAL_NODE_DIR/"
       readonly NETWORK_ID="$DEV_NETWORK_ID"
       ;;
    bfa.mainnet | bfa.testnet )

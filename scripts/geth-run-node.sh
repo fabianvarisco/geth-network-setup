@@ -54,7 +54,6 @@ if [[ $ENVIRONMENT == dev ]]; then
    readonly NODISCOVER_OPTION="--nodiscover"
    # ToDo: targetgaslimit deprecated => use --miner.gasprice
    readonly TARGETGASLIMIT_OPTION="--targetgaslimit 99999999999"
-   readonly CONFIG_TOML_OPTION=""
    readonly NETWORK_ID="$DEV_NETWORK_ID"
    readonly ALLOW_INSECURE_UNLOCK_OPTION="--allow-insecure-unlock"
 else
@@ -62,7 +61,6 @@ else
    readonly MINER_OPTIONS=""
    readonly NODISCOVER_OPTION=""
    readonly TARGETGASLIMIT_OPTION=""
-   readonly CONFIG_TOML_OPTION="--config $DOCKER_GETH_INSTANCE/$NODE/config.toml"
    case "$ENVIRONMENT" in
       bfa.mainnet ) readonly NETWORK_ID="$BFA_MAINNET_NETWORK_ID" ;;
       bfa.testnet ) readonly NETWORK_ID="$BFA_TESTNET_NETWORK_ID" ;;
@@ -74,11 +72,17 @@ else
 fi
 echo "NETWORK_ID [$NETWORK_ID]"
 
+if [[ -e $REAL_GETH_INSTANCE/$NODE/config.toml ]]; then
+   readonly CONFIG_TOML_OPTION="--config $DOCKER_GETH_INSTANCE/$NODE/config.toml"
+else
+   readonly CONFIG_TOML_OPTION=""
+fi
+
 DOCKER_NETWORK_ID=geth_network
 if [ -z $(docker network ls --filter name=^${DOCKER_NETWORK_ID}$ --format "{{.Name}}") ]; then
-  echo "creating network ${DOCKER_NETWORK_ID}..."
-  docker network create $DOCKER_NETWORK_ID
-  echo "${DOCKER_NETWORK_ID} created"
+   echo "creating network ${DOCKER_NETWORK_ID}..."
+   dockerdebug network create "$DOCKER_NETWORK_ID"
+   echo "${DOCKER_NETWORK_ID} created"
 fi
 
 # ToDo: --gcmode archive # Asi esta en la BFA, entender lo que implica
