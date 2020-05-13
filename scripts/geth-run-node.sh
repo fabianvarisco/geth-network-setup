@@ -102,14 +102,13 @@ dockerdebug run $DOCKER_OPTIONS \
        --network "$DOCKER_NETWORK_ID" \
        $PROXY_OPTIONS \
        -v "$REAL_GETH_INSTANCE:$DOCKER_GETH_INSTANCE" \
-       -v "$GETH_DATADIR:$DOCKER_GETH_INSTANCE/data" \
        -v "$HOME/.ethereum:/ipc" \
        -p "${RPC_PORT:-8545}":8545 \
        -p "${WS_PORT:-8546}":8546 \
        -p "${GRAPHQL_PORT:-8547}":8547 \
        "$GETH_IMAGE" \
        --networkid "$NETWORK_ID" \
-       --datadir "$DOCKER_GETH_INSTANCE/data" \
+       --datadir "$DOCKER_GETH_INSTANCE/$NODE" \
        --nousb \
        --rpc \
        --graphql \
