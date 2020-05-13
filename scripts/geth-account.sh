@@ -32,8 +32,6 @@ esac
 echo "GETH_IMAGE [$GETH_IMAGE]"
 echo "NODE [$NODE]"
 
-mkdir -p "$REAL_GETH_INSTANCE/$NODE"
-
 case "$COMMAND" in
 new )
     if [[ ! -v KEYSTORE_PASSWORD || -z $KEYSTORE_PASSWORD ]]; then
