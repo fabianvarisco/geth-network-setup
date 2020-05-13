@@ -42,6 +42,10 @@ Quick one line install:
 
     curl -LSs https://raw.githubusercontent.com/gochain/web3/master/install.sh | sh
 
+Transfer:
+
+    env WEB3_PRIVATE_KEY=<0xKEY> web3 --rpc-url 127.0.0.1:8089 transfer 999 to <0xPUBLIC_ADDRESS>
+
 ### Testing Modules JSON-RPC, WS & GRAPHL
 
 Simple curls to validate the services initialized by Geth
