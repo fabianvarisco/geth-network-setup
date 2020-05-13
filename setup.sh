@@ -41,8 +41,6 @@ function clean() {
        usage
    esac
 
-   warn_backup_rm "$TARGET"
-
    if [[ $1 != keystore ]]; then
       local container
             container="$(docker ps -a --format \{\{.Names\}\} --filter name="$NODE")"
@@ -51,6 +49,9 @@ function clean() {
          dockerdebug rm --force "$container"
       fi
    fi
+
+   warn_backup_rm "$TARGET"
+
    return 0
 }
 
