@@ -27,20 +27,29 @@ function echo_bold_sep() {
    echo
 }
 
+function mkdir_preserve_user() {
+   readonly USERNAME="$USER"
+
+   sudo mkdir -p "$1"
+
+   sudo chown "$USERNAME" "$1"
+   sudo chgrp "$USERNAME" "$1"
+}
+
 function check_param_file() {
-[[ -f "$2" ]] || { echo_red "ERROR: p$1: File [$2] not found !!!"; exit 1; }
+[[ -f $2 ]] || { echo_red "ERROR: p$1: File [$2] not found !!!"; exit 1; }
 }
 
 function check_file() {
-[[ -f "$1" ]] || { echo_red "ERROR: File [$1] not found !!!"; exit 1; }
+[[ -f $1 ]] || { echo_red "ERROR: File [$1] not found !!!"; exit 1; }
 }
 
 function check_file_size() {
-[[ -f "$1" && -r "$1" && -s $1 ]] || { echo_red "ERROR: File [$1] not readeable or empty !!!"; exit 1; }
+[[ -f $1 && -r $1 && -s $1 ]] || { echo_red "ERROR: File [$1] not readeable or empty !!!"; exit 1; }
 }
 
 function check_dir() {
-[[ -d "$1" ]] || { echo_red "ERROR: Dir [$1] not found !!!"; exit 1; }
+[[ -d $1 ]] || { echo_red "ERROR: Dir [$1] not found !!!"; exit 1; }
 }
 
 function check_var_empty() {
@@ -50,12 +59,17 @@ function check_var_empty() {
 function check_no_empty_dir() {
 check_dir "$1"
 local FILES=$(ls -A "$1")
-[[ "$FILES" ]] || { echo_red "ERROR: Dir [$1] is empty !!!"; exit 1; }
+[[ $FILES ]] || { echo_red "ERROR: Dir [$1] is empty !!!"; exit 1; }
 }
 
 function check_exe() {
 local command="$(command -v "$1")"
-[[ -x $command ]] && { echo "exe checked [$command]"; } || { echo_red "ERROR: Exe ["$1"] not found !!!"; exit 1; }
+if [[ -x $command ]]; then
+    echo "exe checked [$command]"
+    return 0
+fi
+echo_red "ERROR: Exe [$1] not found !!!"
+exit 1
 }
 
 function check_number_of_args() {
@@ -66,13 +80,13 @@ fi
 }
 
 function check_env() {
-[[ -v "$1" ]] || { echo_red "ERROR: .env [$1] not found !!!"; exit 1; }
+[[ -v $1 ]] || { echo_red "ERROR: .env [$1] not found !!!"; exit 1; }
 }
 
 function backup_dir() {
 local SOURCE_DIR="$1"
 
-local TAG_NAME="-" && [[ "$#" -eq 2 ]] && TAG_NAME="-$2-"
+local TAG_NAME="-" && [[ $# -eq 2 ]] && TAG_NAME="-$2-"
 
 if [[ -d "$SOURCE_DIR" ]]; then
 
@@ -85,7 +99,7 @@ if [[ -d "$SOURCE_DIR" ]]; then
         fi
     done
 
-    mkdir -p "${SOURCE_DIR}-backup"
+    mkdir_preserve_user "${SOURCE_DIR}-backup"
 
     local FILE=backup-$(basename "$SOURCE_DIR")$TAG_NAME$(date +%Y%m%d%H%M%S).tgz
     $COMMAND --create --gzip --file="${SOURCE_DIR}-backup/$FILE" "$SOURCE_DIR"
@@ -153,7 +167,7 @@ function is_x509_crt() {
 }
 
 check_x509_crt() {
-is_x509_crt "$1" || { echo_red "ERROR: File ["$1"] is not a x509 certificate !!!"; exit 1; }
+is_x509_crt "$1" || { echo_red "ERROR: File [$1] is not a x509 certificate !!!"; exit 1; }
 }
 
 get_CN_from_CSR() {
@@ -161,19 +175,19 @@ get_CN_from_CSR() {
 }
 
 get_CN_from_crypto_material() {
-   case $1 in
-   x509 | req ) local type=$1 ;;
+   case "$1" in
+   x509 | req ) ;;
    * ) echo_red "ERROR: $0 p1 [$1] must be x509 | req"
        exit 1
    esac
-   case $2 in
-   subject | issuer ) local subject_issuer=$2 ;;
+   case "$2" in
+   subject | issuer ) ;;
    * ) echo_red "ERROR: $0 p2 [$1] must be subject | issuer"
        exit 1
    esac
 
-   [[ -s $3 ]] || { echo_red "ERROR: File ["$3"] is not a readeable file !!!"; exit 1; }
-   local commonName=$(openssl $1 -noout -$2 -nameopt multiline -in "$3" | grep commonName)
+   [[ -s $3 ]] || { echo_red "ERROR: File [$3] is not a readeable file !!!"; exit 1; }
+   local commonName=$(openssl "$1" -noout -"$2" -nameopt multiline -in "$3" | grep commonName)
    local array=($commonName)
    echo ${array[2]}
 }
@@ -188,5 +202,5 @@ function jq_check_value() {
 
    echo "WANT [$WANT] VALUE [$VALUE]"
 
-   [[ $WANT == $VALUE ]]
+   [[ $WANT == "$VALUE" ]]
 }

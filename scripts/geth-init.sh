@@ -95,12 +95,8 @@ function main() {
       echo "please, run [\$ setup.sh clean geth] before init."
       exit 1
    fi
-   readonly USERNAME="$USER"
 
-   sudo mkdir -p "$REAL_NODE_DIR"
-
-   sudo chown "$USERNAME" "$REAL_NODE_DIR"
-   sudo chgrp "$USERNAME" "$REAL_NODE_DIR"
+   mkdir_preserve_user "$REAL_NODE_DIR"
 
    case "$ENVIRONMENT" in
    dev )
